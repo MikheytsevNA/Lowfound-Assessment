@@ -1,13 +1,9 @@
-.login {
-  width: 100vw;
-}
-
 .login__picture {
   width: 100vw;
 }
 
 .login__sign {
-  margin: 0 12px;
+  padding: 0 12px;
 }
 
 .login__sign_in,

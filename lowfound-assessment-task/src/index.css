@@ -7,9 +7,6 @@
   color: #242424;
 
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   box-sizing: border-box;
 }
 
@@ -34,4 +31,11 @@ h2 {
   font-size: 20px;
   font-weight: 400;
   margin: 0;
+}
+
+main {
+  width: 100vw;
+  height: calc(100vh - 95px - 24px);
+  overflow: hidden;
+  margin-bottom: 24px;
 }

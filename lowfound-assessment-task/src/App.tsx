@@ -7,15 +7,12 @@ import { Chat } from './blocks/chat/chat';
 import { Login } from './blocks/login/login';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [screen, setScreen] = useState('chat');
 
   return (
     <>
-      <Header></Header>
-      <main>
-        <Login></Login>
-        <Chat></Chat>
-      </main>
+      <Header screen-state={screen} quit-function={setScreen}></Header>
+      <main>{screen === 'login' ? <Login enter-function={setScreen}></Login> : <Chat></Chat>}</main>
     </>
   );
 }
