@@ -73,4 +73,19 @@ describe('Queue tests', () => {
       '789'
     ]);
   });
+  it('delete test', () => {
+    queue.enqueue(val1);
+    queue.enqueue(val1);
+    queue.enqueue(val1);
+    queue.enqueue(val2);
+    queue.delete(1);
+    expect(queue.length).toBe(3);
+    expect(queue.getArray()?.map((elem) => elem.answer)).toStrictEqual(['213', '213', '789']);
+    queue.delete(1);
+    expect(queue.length).toBe(2);
+    queue.delete(1);
+    queue.delete(1);
+    queue.delete(1);
+    expect(queue.getFirst()?.value?.answer).toBe('213');
+  });
 });

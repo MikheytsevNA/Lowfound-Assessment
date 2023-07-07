@@ -21,10 +21,12 @@ export class Queueu {
   public length = 0;
 
   getArray(): Value[] | null {
+    if (this.first === null) return null;
     if (this.first!.value === null) return null;
     const returnArray = [this.first!.value];
     let current = this.first;
     for (let i = 0; i < this.length - 1; i += 1) {
+      if (!current.next) return null;
       current = current!.next;
       if (current === null || current.value === null) continue;
       returnArray.push(current.value);
@@ -62,5 +64,20 @@ export class Queueu {
     if (!this.first) this.last = this.first;
     this.length -= 1;
     return returnValue;
+  }
+
+  delete(index: number) {
+    if (index === 0) {
+      this.dequeue();
+      return this;
+    } else if (index > this.length - 1) return this;
+    let current = this.first;
+    for (let i = 0; i < index - 1; i += 1) {
+      if (!current) return this;
+      current = current.next;
+    }
+    if (!current || !current.next) return this;
+    current.next = current.next.next;
+    this.length -= 1;
   }
 }
