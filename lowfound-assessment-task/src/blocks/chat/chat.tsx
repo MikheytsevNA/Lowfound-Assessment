@@ -1,7 +1,7 @@
 import { Queueu } from './queue';
 import './chat.css';
 import { getChat } from './openAiTests';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function getQueue(): Queueu {
   const queue = new Queueu();
