@@ -80,8 +80,7 @@ export function Chat() {
           <button
             type="button"
             className="chat-input__button"
-            onClick={() => getChat(['Hello World!'])}
-            disabled>
+            onClick={() => getChat(['Hello World!'])}>
             Send
           </button>
         </form>
