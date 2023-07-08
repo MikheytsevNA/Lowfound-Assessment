@@ -1,3 +1,6 @@
 node_modules
 dist
 .vscode
+secret-key
+lowfound-task-firebase-admin*.json
+.env

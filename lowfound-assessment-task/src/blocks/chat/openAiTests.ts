@@ -1,5 +1,4 @@
 import { Configuration } from 'openai';
-import process from 'process';
 
 const configuration = new Configuration({
   apiKey: 'hmmge'
