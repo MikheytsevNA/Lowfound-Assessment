@@ -1,7 +1,6 @@
 import { Queueu } from './queue';
 import './chat.css';
-import { getChat } from './openAiTests';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 function getQueue(): Queueu {
   const queue = new Queueu();
@@ -67,6 +66,7 @@ function makeItems(Varqueue: Queueu | null) {
 }
 
 export function Chat() {
+  const [activeButton, setActiveButton] = useState(false);
   return (
     <>
       <div className="chat">
@@ -76,13 +76,16 @@ export function Chat() {
             name=""
             id=""
             className="chat-input__text"
-            placeholder="Type your message here..."></textarea>
-          <button
+            placeholder="Type your message here..."
+            onChange={(event) =>
+              event.target.value === '' ? setActiveButton(false) : setActiveButton(true)
+            }></textarea>
+          <a
             type="button"
-            className="chat-input__button"
-            onClick={() => getChat(['Hello World!'])}>
+            className={`chat-input__button${activeButton ? ' chat-input__button__enabled' : ''}`}
+            href="http://localhost:8080/messages">
             Send
-          </button>
+          </a>
         </form>
       </div>
     </>

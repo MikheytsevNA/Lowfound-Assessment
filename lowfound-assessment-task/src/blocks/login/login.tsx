@@ -10,26 +10,11 @@ export function Login(loginProps: LoginProps) {
         <img className="login__picture" src={LoginPicture} alt="login picture"></img>
         <div className="login__sign">
           <form className="login__sign_in sign-form" action="">
-            <input type="text" className="sign-form__user" placeholder="Username" />
-            <input type="password" className="sign-form__password" placeholder="Password" />
             <button
               type="submit"
               className="sign-form__button"
-              onClick={() => loginProps['enter-function']('chat')}
-              disabled>
-              Login
-            </button>
-          </form>
-          <div className="login__sign_inter">or sign up if you don’t have an account yet</div>
-          <form className="login__sign_up sign-form" action="">
-            <input type="text" className="sign-form__user" placeholder="Username" />
-            <input type="password" className="sign-form__password" placeholder="Password" />
-            <button
-              type="submit"
-              className="sign-form__button"
-              onClick={() => loginProps['enter-function']('chat')}
-              disabled>
-              Sign up
+              onClick={() => loginProps['enter-function']('chat')}>
+              Log in using Github
             </button>
           </form>
         </div>

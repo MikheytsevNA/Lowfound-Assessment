@@ -71,12 +71,15 @@
   border: none;
   padding: 12px;
   cursor: pointer;
+  pointer-events: none;
 }
 
-.chat-inputt__button:focus {
+.chat-input__button:hover {
+  color: #fff;
   outline: none;
 }
 
-.chat-input__button:enabled {
+.chat-input__button__enabled {
+  pointer-events: inherit;
   background-color: #0085ff;
 }
