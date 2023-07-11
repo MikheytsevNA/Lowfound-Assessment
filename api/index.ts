@@ -23,7 +23,7 @@ declare module 'fastify' {
   }
 }
 
-const server = fastify();
+const server = fastify({ logger: true });
 const applyCors = async () => {
   await server.register(cors, {
     origin: 'https://test-6nvp.onrender.com',
