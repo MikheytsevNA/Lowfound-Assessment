@@ -36,7 +36,7 @@ const applyCors = async () => {
 applyCors();
 
 server.register(import('@fastify/static'), {
-  root: path.join(__dirname, '../frontend/dist'),
+  root: path.join(__dirname, '../frontend-dist'),
   serve: false
 });
 server.register(dbPlugin);
