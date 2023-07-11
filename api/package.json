@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
-    "render:build": "cd ../lowfound-assessment-task && npm install && npm run build && mv ./dist ./../api/frontend/dist && cd ../api && npm install && npm run build && cd ./dist && npx @fastify/secure-session > secret-key",
+    "render:build": "cd ../lowfound-assessment-task && npm install && npm run build && mv dist ../api/frontend/dist && cd ../api && npm install && npm run build && cd ./dist && npx @fastify/secure-session > secret-key",
     "start": "cd npx ts-node index.ts",
     "render:start": "node ./dist/index.js"
   },
