@@ -1,6 +1,7 @@
 import { Queueu, Value } from './queue';
 import './chat.css';
 import { useState, useEffect, SyntheticEvent, useRef } from 'react';
+import { apiEndPoin } from '../../api';
 
 function getDateInCorrectFormat(date: Date) {
   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -36,7 +37,7 @@ function makeItems(
           className="response-item__delete"
           onClick={async () => {
             setQueueArray(queueArray.slice(0, index).concat(queueArray.slice(index + 1)));
-            await fetch(`http://localhost:8080/messages/${queueArray[index].id}`, {
+            await fetch(`${apiEndPoin}/messages/${queueArray[index].id}`, {
               method: 'DELETE',
               credentials: 'include'
             });
@@ -58,7 +59,7 @@ export function Chat() {
   };
   const fetchUserMessages = () => {
     let varQueue = new Queueu();
-    fetch('http://localhost:8080/messages', {
+    fetch(`${apiEndPoin}/messages`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ export function Chat() {
 
   async function sendMessage() {
     setMessage('Message is sent, wait for it to generate');
-    const response = await fetch('http://localhost:8080/messages', {
+    const response = await fetch(`${apiEndPoin}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
