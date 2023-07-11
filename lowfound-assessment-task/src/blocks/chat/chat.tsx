@@ -1,6 +1,6 @@
 import { Queueu, Value } from './queue';
 import './chat.css';
-import { useState, useEffect, SyntheticEvent } from 'react';
+import { useState, useEffect, SyntheticEvent, useRef } from 'react';
 
 function getDateInCorrectFormat(date: Date) {
   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -13,10 +13,12 @@ function makeItems(
   queueArray: Value[] | null,
   setQueueArray: React.Dispatch<React.SetStateAction<Value[] | null>>
 ) {
-  queueArray?.sort((a, b) => a.createDate.getTime() - b.createDate.getTime());
+  queueArray?.sort((a, b) => b.createDate.getTime() - a.createDate.getTime());
   return !queueArray ? (
     <>
-      <div>Your chat is empty. Send your first message to start a chat.</div>
+      <div className="chat_history__item_top">
+        Your chat is empty. Send your first message to start a chat.
+      </div>
     </>
   ) : (
     queueArray.map((item, index) => (
@@ -34,7 +36,6 @@ function makeItems(
           className="response-item__delete"
           onClick={async () => {
             setQueueArray(queueArray.slice(0, index).concat(queueArray.slice(index + 1)));
-            console.log(queueArray[index].id);
             await fetch(`http://localhost:8080/messages/${queueArray[index].id}`, {
               method: 'DELETE',
               credentials: 'include'
@@ -48,8 +49,8 @@ function makeItems(
 }
 
 export function Chat() {
-  const queue = new Queueu();
-  const [queueArray, setQueueArray] = useState(queue.getArray());
+  const queue = useRef(new Queueu());
+  const [queueArray, setQueueArray] = useState(new Queueu().getArray());
   const [message, setMessage] = useState('');
   const handleMessageChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -76,6 +77,7 @@ export function Chat() {
             createDate: new Date(userMessages[i].createDate)
           });
         }
+        queue.current = JSON.parse(JSON.stringify(varQueue));
         setQueueArray(varQueue.getArray());
       });
   };
@@ -96,9 +98,11 @@ export function Chat() {
     const messageBody = await response.json();
     setMessage('');
     messageBody.createDate = new Date(messageBody.createDate);
-    const newQueue = queue;
-    newQueue.enqueue(messageBody);
-    setQueueArray(newQueue.getArray());
+    if (!queueArray) return;
+    const newArray = queueArray;
+    newArray.push(messageBody);
+    setQueueArray(newArray);
+    setMessage('');
   }
   return (
     <>
@@ -118,7 +122,7 @@ export function Chat() {
                 ? ' chat-input__button__enabled'
                 : ''
             }`}
-            onClick={sendMessage}>
+            onClick={async () => await sendMessage()}>
             Send
           </a>
         </form>

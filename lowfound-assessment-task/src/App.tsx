@@ -1,4 +1,3 @@
-import './normalize.css';
 import { Header } from './blocks/header/header';
 import { Chat } from './blocks/chat/chat';
 import { Login } from './blocks/login/login';

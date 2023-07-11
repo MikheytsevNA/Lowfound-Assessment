@@ -99,7 +99,7 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
       model: 'gpt-3.5-turbo',
       messages: userMessagesToAPI
     });
-    const chatGPTAnswer = JSON.stringify(completion.data.choices[0].message?.content);
+    const chatGPTAnswer = completion.data.choices[0].message?.content;
     // const chatGPTAnswer = '42';
     const responseMessage = {
       answer: chatGPTAnswer,
