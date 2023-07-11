@@ -26,7 +26,7 @@ declare module 'fastify' {
 const server = fastify();
 const applyCors = async () => {
   await server.register(cors, {
-    origin: 'http://localhost:5173',
+    origin: 'https://test-6nvp.onrender.com',
     methods: ['GET', 'DELETE', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true
@@ -36,7 +36,7 @@ const applyCors = async () => {
 applyCors();
 
 server.register(import('@fastify/static'), {
-  root: path.join(__dirname, '../../lowfound-assessment-task/dist'),
+  root: path.join(__dirname, '../frontend/dist'),
   serve: false
 });
 server.register(dbPlugin);
