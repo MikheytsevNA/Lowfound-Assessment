@@ -2,13 +2,13 @@ export interface Value {
   id: string;
   question: string;
   answer: string;
-  date: Date;
+  createDate: Date;
 }
 
 class QueueNode {
   value: Value | null;
   next: QueueNode | null;
-  constructor(value: { question: string; answer: string; date: Date; id: string } | null) {
+  constructor(value: { question: string; answer: string; createDate: Date; id: string } | null) {
     this.value = value;
     this.next = null;
   }

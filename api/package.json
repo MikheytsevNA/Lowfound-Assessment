@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
     "@fastify/oauth2": "^7.2.1",
     "@fastify/secure-session": "^6.1.0",
     "dotenv": "^16.3.1",

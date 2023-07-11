@@ -5,12 +5,12 @@ import { FastifyPluginAsync } from 'fastify';
 import oauthPlugin from '@fastify/oauth2';
 import secureSession from '@fastify/secure-session';
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/.env' });
+dotenv.config({ path: __dirname + '/../.env' });
 
 export default fp(async function (fastify, options) {
   fastify.register(secureSession, {
     sessionName: 'session',
-    cookieName: 'my-session-cookie',
+    cookieName: 'my-session-login-cookie',
     key: fs.readFileSync(path.join(__dirname, '../secret-key')),
     cookie: {
       path: '/'

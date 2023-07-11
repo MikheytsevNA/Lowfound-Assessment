@@ -29,7 +29,7 @@
 .sign-form__button {
   text-align: center;
   color: #fff;
-  background-color: #aaaaaa;
+  background-color: #0085ff;
   border: none;
 }
 
@@ -39,12 +39,8 @@
   border: 1px solid var(--accent, #0085ff);
 }
 
-.sign-form__button:focus {
-  outline: none;
-}
-
-.sign-form__button:enabled {
-  background-color: #0085ff;
+.sign-form__button:hover {
+  color: #fff;
 }
 
 .sign-form__user:focus,

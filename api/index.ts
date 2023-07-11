@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import messagesRoutes from './routes/messages';
 import dbPlugin from './plugins/db';
 import oauth2Plugin from './plugins/oauth2';
+import cors from '@fastify/cors';
 import { OAuth2Namespace } from '@fastify/oauth2';
 import { Session, SessionData } from '@fastify/secure-session';
 
@@ -21,11 +22,21 @@ declare module 'fastify' {
   }
 }
 
-const server = fastify({ logger: true });
+const server = fastify();
+const applyCors = async () => {
+  await server.register(cors, {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'DELETE', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true
+  });
+};
 
-server.register(messagesRoutes);
+applyCors();
 server.register(dbPlugin);
 server.register(oauth2Plugin);
+
+server.register(messagesRoutes);
 
 server.listen({ port: 8080 }, (err, address) => {
   if (err) {

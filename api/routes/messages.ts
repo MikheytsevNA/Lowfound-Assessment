@@ -1,5 +1,9 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync, preHandlerAsyncHookHandler } from 'fastify';
+import { Configuration, OpenAIApi } from 'openai';
+import { Timestamp } from 'firebase-admin/firestore';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '../.env' });
 export interface Message {
   id: string;
   question: string;
@@ -35,17 +39,25 @@ const getUserFromAccesToken = async function (accesToken: string): Promise<User>
 
 const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
   fastify.get('/login/callback', async function (request, reply) {
-    const token = await this.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+    const token = await fastify.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
     request.session.set('token', token.token.access_token);
     const user = await getUserFromAccesToken(token.token.access_token);
-    const userRef = this.db.doc(`users/${user.id}`);
+    const userRef = fastify.db.doc(`users/${user.id}`);
     const userSnapshot = await userRef.get();
     if (!userSnapshot.exists) {
       await userRef.set({ name: user.name });
       console.log('new user is here!');
     }
-    reply.redirect('http://localhost:5173'); // redirect to "/"
+    reply.redirect('http://localhost:5173/chat'); // redirect to "/" */
   });
+
+  fastify.get('/logout', async function (request, reply) {
+    // request.session.delete();
+    reply.clearCookie('oauth2-redirect-state', { path: '/' });
+    reply.clearCookie('my-session-login-cookie', { path: '/' });
+    reply.redirect('http://localhost:5173');
+  });
+
   fastify.get('/messages', { preHandler: loginHook }, async (request, reply) => {
     // get messages from db for signed in user
     const token = request.session.get('token');
@@ -62,20 +74,51 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
         createDate: value.data().createDate.toDate()
       })
     );
-    return userMessages;
+    reply.send(userMessages);
   });
 
   fastify.post('/messages', { preHandler: loginHook }, async (request, reply) => {
     // post to openAI API
     // get answer from it
     // save and response
-    return 'pong\n';
+    const question = request.body;
+    const token = request.session.get('token');
+    if (!token) throw new Error();
+    const user = await getUserFromAccesToken(token);
+    const userMessagesToAPI: any[] = [
+      {
+        role: 'user',
+        content: `${question}`
+      }
+    ];
+    const configuration = new Configuration({
+      apiKey: process.env.openAI!.toString()
+    });
+    const openai = new OpenAIApi(configuration);
+    const completion = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: userMessagesToAPI
+    });
+    const chatGPTAnswer = JSON.stringify(completion.data.choices[0].message?.content);
+    // const chatGPTAnswer = '42';
+    const responseMessage = {
+      answer: chatGPTAnswer,
+      createDate: new Date(),
+      question: question,
+      id: ''
+    };
+    const response = await fastify.db.collection(`/users/${user.id}/messages`).add(responseMessage);
+    responseMessage.id = response.id;
+    reply.send(responseMessage);
   });
 
   fastify.delete('/messages/:messageId', { preHandler: loginHook }, async (request, reply) => {
     // delete messege with given id from db
     const { messageId } = request.params as any;
-    const deleteTime = fastify.db.collection('test').doc(messageId).delete();
+    const token = request.session.get('token');
+    if (!token) throw new Error();
+    const user = await getUserFromAccesToken(token);
+    const deleteTime = fastify.db.collection(`/users/${user.id}/messages`).doc(messageId).delete();
     return deleteTime;
   });
 };

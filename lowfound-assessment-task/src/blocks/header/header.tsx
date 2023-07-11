@@ -2,7 +2,6 @@ import './header.css';
 
 type ScreenProps = {
   'screen-state': string;
-  'quit-function': React.Dispatch<React.SetStateAction<string>>;
 };
 export function Header(screenProps: ScreenProps) {
   return (
@@ -10,9 +9,9 @@ export function Header(screenProps: ScreenProps) {
       <header className="header">
         <h2>Lowfound OpenAI API Chat</h2>
         {screenProps['screen-state'] === 'chat' ? (
-          <div className="logout" onClick={() => screenProps['quit-function']('login')}>
+          <a className="logout" href="http://localhost:8080/logout">
             Logout
-          </div>
+          </a>
         ) : (
           <></>
         )}

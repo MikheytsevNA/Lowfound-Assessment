@@ -12,4 +12,10 @@
 
 .logout {
   margin: 0 0 0 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.logout:hover {
+  color: #fff;
 }

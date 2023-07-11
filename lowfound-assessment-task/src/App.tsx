@@ -1,20 +1,26 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './normalize.css';
 import { Header } from './blocks/header/header';
 import { Chat } from './blocks/chat/chat';
 import { Login } from './blocks/login/login';
 
-function App() {
-  const [screen, setScreen] = useState('chat');
-
+export function App() {
   return (
     <>
-      <Header screen-state={screen} quit-function={setScreen}></Header>
-      <main>{screen === 'login' ? <Login enter-function={setScreen}></Login> : <Chat></Chat>}</main>
+      <Header screen-state="login"></Header>
+      <main>
+        <Login></Login>
+      </main>
     </>
   );
 }
 
-export default App;
+export function AppChat() {
+  return (
+    <>
+      <Header screen-state="chat"></Header>
+      <main>
+        <Chat></Chat>
+      </main>
+    </>
+  );
+}
