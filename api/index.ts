@@ -5,6 +5,7 @@ import oauth2Plugin from './plugins/oauth2';
 import cors from '@fastify/cors';
 import { OAuth2Namespace } from '@fastify/oauth2';
 import { Session, SessionData } from '@fastify/secure-session';
+import path from 'path';
 
 declare module '@fastify/secure-session' {
   interface SessionData {
@@ -33,10 +34,20 @@ const applyCors = async () => {
 };
 
 applyCors();
+
+server.register(import('@fastify/static'), {
+  root: path.join(__dirname, '../../lowfound-assessment-task/dist'),
+  serve: false
+});
 server.register(dbPlugin);
 server.register(oauth2Plugin);
 
 server.register(messagesRoutes);
+
+server.get('*', async (request, reply) => {
+  reply.sendFile('index.html');
+  return reply;
+});
 
 server.listen({ port: 8080 }, (err, address) => {
   if (err) {

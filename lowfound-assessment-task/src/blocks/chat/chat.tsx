@@ -1,7 +1,7 @@
 import { Queueu, Value } from './queue';
 import './chat.css';
 import { useState, useEffect, SyntheticEvent, useRef } from 'react';
-import { apiEndPoin } from '../../api';
+import { apiEndPoint } from '../../api';
 
 function getDateInCorrectFormat(date: Date) {
   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -15,7 +15,7 @@ function makeItems(
   setQueueArray: React.Dispatch<React.SetStateAction<Value[] | null>>
 ) {
   queueArray?.sort((a, b) => b.createDate.getTime() - a.createDate.getTime());
-  return !queueArray ? (
+  return !queueArray || queueArray.length === 0 ? (
     <>
       <div className="chat_history__item_top">
         Your chat is empty. Send your first message to start a chat.
@@ -37,7 +37,7 @@ function makeItems(
           className="response-item__delete"
           onClick={async () => {
             setQueueArray(queueArray.slice(0, index).concat(queueArray.slice(index + 1)));
-            await fetch(`${apiEndPoin}/messages/${queueArray[index].id}`, {
+            await fetch(`${apiEndPoint}/messages/${queueArray[index].id}`, {
               method: 'DELETE',
               credentials: 'include'
             });
@@ -59,7 +59,7 @@ export function Chat() {
   };
   const fetchUserMessages = () => {
     let varQueue = new Queueu();
-    fetch(`${apiEndPoin}/messages`, {
+    fetch(`${apiEndPoint}/messages`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ export function Chat() {
 
   async function sendMessage() {
     setMessage('Message is sent, wait for it to generate');
-    const response = await fetch(`${apiEndPoin}/messages`, {
+    const response = await fetch(`${apiEndPoint}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'

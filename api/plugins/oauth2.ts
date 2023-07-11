@@ -5,7 +5,7 @@ import { FastifyPluginAsync } from 'fastify';
 import oauthPlugin from '@fastify/oauth2';
 import secureSession from '@fastify/secure-session';
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/../.env' });
+dotenv.config();
 
 export default fp(async function (fastify, options) {
   fastify.register(secureSession, {
