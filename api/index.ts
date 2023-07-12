@@ -45,7 +45,7 @@ server.register(oauth2Plugin);
 server.register(messagesRoutes);
 
 server.get('*', async (request, reply) => {
-  reply.sendFile('index.html');
+  reply.sendFile('*/index.html');
   return reply;
 });
 
