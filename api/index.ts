@@ -112,7 +112,7 @@ server.register(oauth2Plugin);
 
 server.register(messagesRoutes);
 
-server.listen({ port: parseInt(process.env.PORT) }, (err, address) => {
+server.listen({ host: ("RENDER" in process.env) ? `0.0.0.0` : `localhost`, port: parseInt(process.env.PORT) }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
