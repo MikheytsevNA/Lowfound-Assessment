@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx ts-node --esm index.ts --dev",
-    "build": "tsc -p tsconfig.json && vite build",
+    "build": "tsc -p tsconfig.json && vite build && npx @fastify/secure-session > secret-key",
     "start": "node index.js"
   },
   "keywords": [],
