@@ -2,7 +2,6 @@ import fastify from 'fastify';
 import messagesRoutes from './routes/messages.js';
 import dbPlugin from './plugins/db.js';
 import oauth2Plugin from './plugins/oauth2.js';
-import cors from '@fastify/cors';
 import FastifyVite from "@fastify/vite";
 const server = fastify({ logger: false });
 await server.register(FastifyVite, {
@@ -18,12 +17,12 @@ server.get("/", (req, reply) => {
 server.setNotFoundHandler((request, reply) => {
     reply.html();
 });
-await server.register(cors, {
-    origin: 'https://test-6nvp.onrender.com',
-    methods: ['GET', 'DELETE', 'POST'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true
-});
+/* await server.register(cors, {
+  origin: 'https://test-6nvp.onrender.com',
+  methods: ['GET', 'DELETE', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+}); */
 /* server.register(import('@fastify/static'), {
   root: path.join(__dirname, '../frontend-dist'),
   serve: false
