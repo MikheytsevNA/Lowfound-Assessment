@@ -1,5 +1,6 @@
 .login__picture {
   width: 100vw;
+  max-height: 450px;
 }
 
 .login__sign {

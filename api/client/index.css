@@ -7,6 +7,7 @@
   color: #242424;
 
   height: 100vh;
+  max-width: 500px;
   box-sizing: border-box;
 }
 
@@ -20,8 +21,9 @@ a:hover {
 }
 
 body {
-  margin: 0;
+  margin: 0 auto;
   display: flex;
+  flex-direction: column;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
