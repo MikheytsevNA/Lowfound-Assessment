@@ -11,7 +11,6 @@ await server.register(FastifyVite, {
 });
 await server.vite.ready();
 server.get("/", (req, reply) => {
-    console.log("we are in!");
     reply.html();
     return reply;
 });
@@ -23,10 +22,6 @@ server.setNotFoundHandler((request, reply) => {
   methods: ['GET', 'DELETE', 'POST'],
   allowedHeaders: ['Content-Type'],
   credentials: true
-}); */
-/* server.register(import('@fastify/static'), {
-  root: path.join(__dirname, '../frontend-dist'),
-  serve: false
 }); */
 server.register(dbPlugin);
 server.register(oauth2Plugin);
