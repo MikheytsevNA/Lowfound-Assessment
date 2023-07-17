@@ -39,7 +39,11 @@ await server.register(FastifyVite, {
 
 await server.vite.ready();
 
-server.get("/", (req, reply) => reply.html());
+server.get("/", (req, reply) => {
+  reply.html();
+  return reply;
+});
+
 
 server.setNotFoundHandler((request, reply) => {
   reply.html();
