@@ -65,7 +65,7 @@ server.register(oauth2Plugin);
 
 server.register(messagesRoutes);
 
-server.listen({ port: 8080 }, (err, address) => {
+server.listen({ port: parseInt(process.env.PORT) }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
