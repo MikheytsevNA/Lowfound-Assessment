@@ -7,7 +7,6 @@ import * as dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 dotenv.config();
 const __dirname = fileURLToPath(dirname(import.meta.url));
-console.log(__dirname);
 export default fp(async function (fastify, options) {
     fastify.register(secureSession, {
         sessionName: 'session',

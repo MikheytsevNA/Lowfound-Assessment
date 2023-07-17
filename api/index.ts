@@ -40,7 +40,7 @@ await server.register(FastifyVite, {
 await server.vite.ready();
 
 server.get("/", (req, reply) => {
-  console.log("we are in!");
+  reply.send({hello: "World!"})
   reply.html();
   return reply;
 });
