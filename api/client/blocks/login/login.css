@@ -1,0 +1,58 @@
+.login__picture {
+  width: 100vw;
+}
+
+.login__sign {
+  padding: 0 12px;
+}
+
+.login__sign_in,
+.login__sign_up {
+  margin: 24px 0 12px 0;
+}
+
+.login__sign_inter {
+  text-align: center;
+}
+
+.sign-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sign-form * {
+  margin: 0 0 12px 0;
+  padding: 12px;
+}
+
+.sign-form__button {
+  text-align: center;
+  color: #fff;
+  background-color: #0085ff;
+  border: none;
+}
+
+.sign-form__user,
+.sign-form__password {
+  box-sizing: content-box;
+  border: 1px solid var(--accent, #0085ff);
+}
+
+.sign-form__button:hover {
+  color: #fff;
+}
+
+.sign-form__user:focus,
+.sign-form__password:focus {
+  outline: none;
+  padding-bottom: 11px;
+  border-bottom: 2px solid var(--accent, #0085ff);
+  border-left: 2px solid var(--accent, #0085ff);
+  border-right: 2px solid var(--accent, #0085ff);
+}
+
+.sign-form__user::placeholder,
+.sign-form__password::placeholder {
+  color: #aaaaaa;
+}

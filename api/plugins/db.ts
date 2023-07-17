@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync } from 'fastify';
-import FireBaseKey from '../lowfound-task-firebase-adminsdk-h96sn-99a6afb279.json';
+// @ts-ignore
+import FireBaseKey from '../lowfound-task-firebase-adminsdk-h96sn-99a6afb279.json' assert { type: "json" };
 import { initializeApp, applicationDefault, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/firestore';
 

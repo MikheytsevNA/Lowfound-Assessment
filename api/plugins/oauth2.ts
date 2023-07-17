@@ -1,11 +1,15 @@
 import fp from 'fastify-plugin';
 import fs from 'fs';
-import path from 'path';
+import path, {dirname} from 'path';
 import { FastifyPluginAsync } from 'fastify';
 import oauthPlugin from '@fastify/oauth2';
 import secureSession from '@fastify/secure-session';
 import * as dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
 dotenv.config();
+
+const __dirname =fileURLToPath(dirname(import.meta.url));
+console.log(__dirname);
 
 export default fp(async function (fastify, options) {
   fastify.register(secureSession, {
@@ -27,6 +31,6 @@ export default fp(async function (fastify, options) {
       auth: oauthPlugin.GITHUB_CONFIGURATION
     },
     startRedirectPath: '/login',
-    callbackUri: 'https://test-6nvp.onrender.com/login/callback'
+    callbackUri: 'https://test-6nvp.onrender.com/login/callback' // change for render.com deply!!!
   });
 });

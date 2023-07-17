@@ -3,7 +3,7 @@ import { FastifyPluginAsync, preHandlerAsyncHookHandler } from 'fastify';
 import { Configuration, OpenAIApi } from 'openai';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '../.env' });
+dotenv.config({ path: '../.env' });
 export interface Message {
   id: string;
   question: string;
@@ -39,6 +39,7 @@ const getUserFromAccesToken = async function (accesToken: string): Promise<User>
 
 const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
   fastify.get('/login/callback', async function (request, reply) {
+    try {
     const token = await fastify.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
     request.session.set('token', token.token.access_token);
     const user = await getUserFromAccesToken(token.token.access_token);
@@ -48,14 +49,18 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
       await userRef.set({ name: user.name });
       console.log('new user is here!');
     }
-    reply.redirect('http://localhost:5173/chat'); // redirect to "/" */
+    reply.redirect('/chat'); // redirect to "/" */
+  } catch (e) {
+    console.error(e);
+    reply.send(e);
+  }
   });
 
   fastify.get('/logout', async function (request, reply) {
     // request.session.delete();
-    reply.clearCookie('oauth2-redirect-state', { path: '/' });
+    /* reply.clearCookie('oauth2-redirect-state', { path: '/' }); */
     reply.clearCookie('my-session-login-cookie', { path: '/' });
-    reply.redirect('http://localhost:5173');
+    reply.redirect('/');
   });
 
   fastify.get('/messages', { preHandler: loginHook }, async (request, reply) => {
