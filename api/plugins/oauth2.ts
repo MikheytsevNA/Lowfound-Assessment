@@ -30,6 +30,6 @@ export default fp(async function (fastify, options) {
       auth: oauthPlugin.GITHUB_CONFIGURATION
     },
     startRedirectPath: '/login',
-    callbackUri: 'https://test-6nvp.onrender.com/login/callback' // change for render.com deply!!!
+    callbackUri: `${("RENDER" in process.env) ? `https://test-6nvp.onrender.com` : `http://localhost:3001`}/login/callback` // change for render.com deply!!!
   });
 });

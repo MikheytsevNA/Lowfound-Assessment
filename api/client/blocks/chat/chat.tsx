@@ -50,9 +50,50 @@ function makeItems(
   );
 }
 
+function fillQueue() {
+  const varQueue = new Queueu();
+  const userMessages = [
+    {
+      id: '1',
+      question: "21313123",
+      answer: '123312312',
+      createDate: new Date()
+    },
+    {
+      id: '2',
+      question: "21313123",
+      answer: '123312312',
+      createDate: new Date()
+    },
+    {
+      id: '3',
+      question: "21313123",
+      answer: '123312312',
+      createDate: new Date()
+    },
+    {
+      id: '4',
+      question: "21313123",
+      answer: '123312312',
+      createDate: new Date()
+      },
+  ];
+  for (let i = 0; i < userMessages.length; i += 1) {
+    varQueue.enqueue({
+      id: userMessages[i].id,
+      question: userMessages[i].question,
+      answer: userMessages[i].answer,
+      createDate: new Date(userMessages[i].createDate)
+    });
+  }
+  return varQueue;
+}
+
 export function Chat() {
-  const queue = useRef(new Queueu());
-  const [queueArray, setQueueArray] = useState(new Queueu().getArray());
+  // const queue = useRef(new Queueu());
+  // const [queueArray, setQueueArray] = useState(new Queueu().getArray());
+  const queue = useRef(fillQueue());
+  const [queueArray, setQueueArray] = useState(fillQueue().getArray());
   const [message, setMessage] = useState('');
   const handleMessageChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -83,9 +124,9 @@ export function Chat() {
         setQueueArray(varQueue.getArray());
       });
   };
-  useEffect(() => {
+  /* useEffect(() => {
     fetchUserMessages();
-  }, []);
+  }, []); */
 
   async function sendMessage() {
     setMessage('Message is sent, wait for it to generate');

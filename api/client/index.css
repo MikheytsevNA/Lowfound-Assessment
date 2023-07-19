@@ -7,7 +7,7 @@
   color: #242424;
 
   height: 100vh;
-  max-width: 500px;
+  max-height: -webkit-fill-available;
   box-sizing: border-box;
 }
 
