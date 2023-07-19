@@ -37,7 +37,5 @@ h2 {
 
 main {
   width: 100vw;
-  height: calc(100vh - 95px - 24px);
-  overflow: hidden;
-  margin-bottom: 24px;
+  height: calc(100dvh - 95px);
 }

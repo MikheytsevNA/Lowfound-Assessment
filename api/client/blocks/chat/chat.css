@@ -1,7 +1,7 @@
 .chat {
-  height: 100%;
+  height: calc(100% - 10px);
   padding: 0 12px;
-  margin: 12px 0 0 0;
+  margin: 10px 0 0 0;
 }
 
 .chat_history {
@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column-reverse;
   height: calc(100% - 192px);
+  margin: 0;
 }
 
 .chat_history::-webkit-scrollbar {
@@ -55,8 +56,10 @@
   display: flex;
   flex-direction: column;
   position: fixed;
+  background-color: rgba(255, 255, 255, 0.87);
+  padding: 10px 0 0 0;
   width: calc(100% - 24px);
-  bottom: calc(100vh - 100%);;
+  bottom: 0;
 }
 
 .chat-input * {
