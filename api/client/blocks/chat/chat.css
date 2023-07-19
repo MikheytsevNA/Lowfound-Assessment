@@ -55,6 +55,8 @@
 .chat-input {
   display: flex;
   flex-direction: column;
+  position: sticky;
+  bottom: -20px;
 }
 
 .chat-input * {
