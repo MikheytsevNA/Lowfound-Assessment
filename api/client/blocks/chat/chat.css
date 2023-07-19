@@ -2,8 +2,6 @@
   height: 100%;
   padding: 0 12px;
   margin: 12px 0 0 0;
-  display: flex;
-  flex-direction: column;
 }
 
 .chat_history {
@@ -13,6 +11,7 @@
   padding: 0;
   display: flex;
   flex-direction: column-reverse;
+  height: calc(100% - 192px);
 }
 
 .chat_history::-webkit-scrollbar {
@@ -55,8 +54,9 @@
 .chat-input {
   display: flex;
   flex-direction: column;
-  position: sticky;
-  bottom: calc(-192px + (100vh - 100%));
+  position: fixed;
+  width: calc(100% - 24px);
+  bottom: 0;
 }
 
 .chat-input * {
@@ -81,7 +81,7 @@
   padding: 12px;
   cursor: pointer;
   pointer-events: none;
-  width: calc(100% - 26px);
+  width: calc(100% - 24px);
 }
 
 .chat-input__button:hover {
