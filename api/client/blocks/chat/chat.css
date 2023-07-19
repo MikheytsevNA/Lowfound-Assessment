@@ -1,7 +1,6 @@
 .chat {
   height: calc(100% - 10px);
   padding: 0 12px;
-  margin: 10px 0 0 0;
 }
 
 .chat_history {
@@ -59,7 +58,7 @@
   background-color: rgba(255, 255, 255, 0.87);
   padding: 10px 0 0 0;
   width: calc(100% - 24px);
-  bottom: 0;
+  bottom: calc(100vh - 100%);
 }
 
 .chat-input * {

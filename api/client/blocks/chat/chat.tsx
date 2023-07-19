@@ -90,10 +90,10 @@ function fillQueue() {
 }
 
 export function Chat() {
-  // const queue = useRef(new Queueu());
-  // const [queueArray, setQueueArray] = useState(new Queueu().getArray());
-  const queue = useRef(fillQueue());
-  const [queueArray, setQueueArray] = useState(fillQueue().getArray());
+  const queue = useRef(new Queueu());
+  const [queueArray, setQueueArray] = useState(new Queueu().getArray());
+  //const queue = useRef(fillQueue());
+  // const [queueArray, setQueueArray] = useState(fillQueue().getArray());
   const [message, setMessage] = useState('');
   const handleMessageChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -124,9 +124,9 @@ export function Chat() {
         setQueueArray(varQueue.getArray());
       });
   };
-  /* useEffect(() => {
+  useEffect(() => {
     fetchUserMessages();
-  }, []); */
+  }, []);
 
   async function sendMessage() {
     setMessage('Message is sent, wait for it to generate');
