@@ -1,6 +1,6 @@
 .chat {
   height: calc(100% - 10px);
-  padding: 0 12px;
+  padding: 5px 12px;
 }
 
 .chat_history {

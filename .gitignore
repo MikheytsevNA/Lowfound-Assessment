@@ -4,3 +4,4 @@ dist
 secret-key
 lowfound-task-firebase-admin*.json
 .env
+todo.txt
