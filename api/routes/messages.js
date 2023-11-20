@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
 const loginHook = async function (request, reply) {
@@ -48,6 +48,7 @@ const messagePlugin = async (fastify, options) => {
     });
     fastify.get('/messages', { preHandler: loginHook }, async (request, reply) => {
         // get messages from db for signed in user
+        console.log('/messages');
         const token = request.session.get('token');
         if (!token)
             throw new Error();
@@ -78,22 +79,33 @@ const messagePlugin = async (fastify, options) => {
                 content: `${question}`
             }
         ];
-        const configuration = new Configuration({
+        const configuration = {
             apiKey: process.env.openAI.toString()
-        });
-        const openai = new OpenAIApi(configuration);
-        const completion = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
-            messages: userMessagesToAPI
-        });
-        const chatGPTAnswer = completion.data.choices[0].message?.content;
-        // const chatGPTAnswer = '42';
-        const responseMessage = {
-            answer: chatGPTAnswer,
+        };
+        const openai = new OpenAI(configuration);
+        let responseMessage = {
+            error: true,
+            answer: 'ChatGPT did not answer ;(',
             createDate: new Date(),
             question: question,
             id: ''
         };
+        try {
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-3.5-turbo',
+                messages: userMessagesToAPI
+            });
+            const chatGPTAnswer = completion.choices[0].message?.content;
+            // const chatGPTAnswer = '42';
+            responseMessage = {
+                error: false,
+                answer: chatGPTAnswer,
+                createDate: new Date(),
+                question: question,
+                id: ''
+            };
+        }
+        catch { }
         const response = await fastify.db.collection(`/users/${user.id}/messages`).add(responseMessage);
         responseMessage.id = response.id;
         reply.send(responseMessage);

@@ -46,9 +46,14 @@
   color: #0085ff;
 }
 
-.response-item__delete {
+.response-item__delete,
+.response-item__reload {
   cursor: pointer;
   color: #ff0000;
+}
+
+.response-item__reload__disabled {
+  pointer-events: none;
 }
 
 .chat-input {

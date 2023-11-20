@@ -3,6 +3,7 @@ import './chat.css';
 import { useState, useEffect, SyntheticEvent, useRef } from 'react';
 import { apiEndPoint } from '../../api';
 import React from 'react';
+import { TailSpin } from 'react-loader-spinner';
 
 function getDateInCorrectFormat(date: Date) {
   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -11,10 +12,43 @@ function getDateInCorrectFormat(date: Date) {
   } ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 }
 
+async function resentMessage(
+  queueArray: Value[] | null,
+  index: number,
+  setQueueArray: React.Dispatch<React.SetStateAction<Value[] | null>>
+) {
+  const response = await fetch(`${apiEndPoint}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain'
+    },
+    credentials: 'include',
+    body: queueArray[index].question
+  });
+
+  const messageBody = await response.json();
+
+  if (messageBody.error) {
+    alert('Resent was unsuccessful');
+    return;
+  }
+  messageBody.createDate = new Date(messageBody.createDate);
+  if (!queueArray) return;
+  const newArray = queueArray;
+  const idToDelete = newArray.splice(index, 1)[0];
+  newArray.push(messageBody);
+  setQueueArray(newArray);
+  await fetch(`${apiEndPoint}/messages/${idToDelete.id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+}
+
 function makeItems(
   queueArray: Value[] | null,
   setQueueArray: React.Dispatch<React.SetStateAction<Value[] | null>>
 ) {
+  const [loading, setLoading] = useState(false);
   queueArray?.sort((a, b) => b.createDate.getTime() - a.createDate.getTime());
   return !queueArray || queueArray.length === 0 ? (
     <>
@@ -23,70 +57,52 @@ function makeItems(
       </div>
     </>
   ) : (
-    queueArray.map((item, index) => (
-      <li className="chat_history__item response-item" key={item.id}>
-        <div className="response-item__date">{getDateInCorrectFormat(item.createDate)}</div>
-        <div className="response-item__question">
-          <p className="response-item_blue">You asked:</p>
-          {item.question}
-        </div>
-        <div className="response-item__answer">
-          <p className="response-item_blue">GPT responded:</p>
-          {item.answer}
-        </div>
-        <div
-          className="response-item__delete"
-          onClick={async () => {
-            setQueueArray(queueArray.slice(0, index).concat(queueArray.slice(index + 1)));
-            await fetch(`${apiEndPoint}/messages/${queueArray[index].id}`, {
-              method: 'DELETE',
-              credentials: 'include'
-            });
-          }}>
-          Delete
-        </div>
-      </li>
-    ))
+    queueArray.map((item, index) => {
+      return (
+        <li className="chat_history__item response-item" key={item.id}>
+          <div className="response-item__date">{getDateInCorrectFormat(item.createDate)}</div>
+          <div className="response-item__question">
+            <p className="response-item_blue">You asked:</p>
+            {item.question}
+          </div>
+          <div className="response-item__answer">
+            <p className="response-item_blue">GPT responded:</p>
+            {item.answer}
+          </div>
+          {item.error === true ? (
+            <div
+              className={`response-item__reload ${
+                loading ? 'response-item__reload__disabled' : ''
+              }`}
+              onClick={async () => {
+                setLoading(true);
+                await resentMessage(queueArray, index, setQueueArray);
+                setLoading(false);
+              }}>
+              {loading ? (
+                <TailSpin color="red" radius={'2px'} height={'20px'} width={'20px'} />
+              ) : (
+                'Re-sent'
+              )}
+            </div>
+          ) : (
+            ''
+          )}
+          <div
+            className="response-item__delete"
+            onClick={async () => {
+              setQueueArray(queueArray.slice(0, index).concat(queueArray.slice(index + 1)));
+              await fetch(`${apiEndPoint}/messages/${queueArray[index].id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+              });
+            }}>
+            Delete
+          </div>
+        </li>
+      );
+    })
   );
-}
-
-function fillQueue() {
-  const varQueue = new Queueu();
-  const userMessages = [
-    {
-      id: '1',
-      question: "21313123",
-      answer: '123312312',
-      createDate: new Date()
-    },
-    {
-      id: '2',
-      question: "21313123",
-      answer: '123312312',
-      createDate: new Date()
-    },
-    {
-      id: '3',
-      question: "21313123",
-      answer: '123312312',
-      createDate: new Date()
-    },
-    {
-      id: '4',
-      question: "21313123",
-      answer: '123312312',
-      createDate: new Date()
-      },
-  ];
-  for (let i = 0; i < userMessages.length; i += 1) {
-    varQueue.enqueue({
-      id: userMessages[i].id,
-      question: userMessages[i].question,
-      answer: userMessages[i].answer,
-      createDate: new Date(userMessages[i].createDate)
-    });
-  }
-  return varQueue;
 }
 
 export function Chat() {
@@ -95,6 +111,7 @@ export function Chat() {
   //const queue = useRef(fillQueue());
   // const [queueArray, setQueueArray] = useState(fillQueue().getArray());
   const [message, setMessage] = useState('');
+  const inputIsBusy = useRef(false);
   const handleMessageChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     setMessage(target.value);
@@ -114,6 +131,7 @@ export function Chat() {
       .then((userMessages) => {
         for (let i = 0; i < userMessages.length; i += 1) {
           varQueue.enqueue({
+            error: userMessages[i].error,
             id: userMessages[i].id,
             question: userMessages[i].question,
             answer: userMessages[i].answer,
@@ -130,6 +148,7 @@ export function Chat() {
 
   async function sendMessage() {
     setMessage('Message is sent, wait for it to generate');
+    inputIsBusy.current = true;
     const response = await fetch(`${apiEndPoint}/messages`, {
       method: 'POST',
       headers: {
@@ -140,12 +159,12 @@ export function Chat() {
     });
     const messageBody = await response.json();
     setMessage('');
+    inputIsBusy.current = false;
     messageBody.createDate = new Date(messageBody.createDate);
     if (!queueArray) return;
     const newArray = queueArray;
     newArray.push(messageBody);
     setQueueArray(newArray);
-    setMessage('');
   }
   return (
     <>
@@ -158,12 +177,12 @@ export function Chat() {
             className="chat-input__text"
             placeholder="Type your message here..."
             value={message}
-            onChange={handleMessageChange}></textarea>
+            onChange={handleMessageChange}
+            disabled={inputIsBusy.current}></textarea>
+
           <a
             className={`chat-input__button${
-              message && message !== 'Message is sent, wait for it to generate'
-                ? ' chat-input__button__enabled'
-                : ''
+              message !== '' && !inputIsBusy.current ? ' chat-input__button__enabled' : ''
             }`}
             onClick={async () => await sendMessage()}>
             Send

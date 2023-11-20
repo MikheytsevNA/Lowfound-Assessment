@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync, preHandlerAsyncHookHandler } from 'fastify';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
@@ -40,20 +40,21 @@ const getUserFromAccesToken = async function (accesToken: string): Promise<User>
 const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
   fastify.get('/login/callback', async function (request, reply) {
     try {
-    const token = await fastify.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
-    request.session.set('token', token.token.access_token);
-    const user = await getUserFromAccesToken(token.token.access_token);
-    const userRef = fastify.db.doc(`users/${user.id}`);
-    const userSnapshot = await userRef.get();
-    if (!userSnapshot.exists) {
-      await userRef.set({ name: user.name });
-      console.log('new user is here!');
+      const token = await fastify.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+      request.session.set('token', token.token.access_token);
+      const user = await getUserFromAccesToken(token.token.access_token);
+
+      const userRef = fastify.db.doc(`users/${user.id}`);
+      const userSnapshot = await userRef.get();
+      if (!userSnapshot.exists) {
+        await userRef.set({ name: user.name });
+        console.log('new user is here!');
+      }
+      reply.redirect('/chat'); // redirect to "/" */
+    } catch (e) {
+      console.error(e);
+      reply.send(e);
     }
-    reply.redirect('/chat'); // redirect to "/" */
-  } catch (e) {
-    console.error(e);
-    reply.send(e);
-  }
   });
 
   fastify.get('/logout', async function (request, reply) {
@@ -65,6 +66,7 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
 
   fastify.get('/messages', { preHandler: loginHook }, async (request, reply) => {
     // get messages from db for signed in user
+    console.log('/messages');
     const token = request.session.get('token');
     if (!token) throw new Error();
     const user = await getUserFromAccesToken(token);
@@ -96,22 +98,32 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
         content: `${question}`
       }
     ];
-    const configuration = new Configuration({
+    const configuration = {
       apiKey: process.env.openAI!.toString()
-    });
-    const openai = new OpenAIApi(configuration);
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: userMessagesToAPI
-    });
-    const chatGPTAnswer = completion.data.choices[0].message?.content;
-    // const chatGPTAnswer = '42';
-    const responseMessage = {
-      answer: chatGPTAnswer,
+    };
+    const openai = new OpenAI(configuration);
+    let responseMessage = {
+      error: true,
+      answer: 'ChatGPT did not answer ;(',
       createDate: new Date(),
       question: question,
       id: ''
     };
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: userMessagesToAPI
+      });
+      const chatGPTAnswer = completion.choices[0].message?.content;
+      // const chatGPTAnswer = '42';
+      responseMessage = {
+        error: false,
+        answer: chatGPTAnswer,
+        createDate: new Date(),
+        question: question,
+        id: ''
+      };
+    } catch {}
     const response = await fastify.db.collection(`/users/${user.id}/messages`).add(responseMessage);
     responseMessage.id = response.id;
     reply.send(responseMessage);

@@ -1,4 +1,5 @@
 export interface Value {
+  error: boolean;
   id: string;
   question: string;
   answer: string;
@@ -8,7 +9,9 @@ export interface Value {
 class QueueNode {
   value: Value | null;
   next: QueueNode | null;
-  constructor(value: { question: string; answer: string; createDate: Date; id: string } | null) {
+  constructor(
+    value: { error: boolean; question: string; answer: string; createDate: Date; id: string } | null
+  ) {
     this.value = value;
     this.next = null;
   }
