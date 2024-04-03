@@ -17,6 +17,11 @@ async function resentMessage(
   index: number,
   setQueueArray: React.Dispatch<React.SetStateAction<Value[] | null>>
 ) {
+  await fetch(`${apiEndPoint}/messages/${queueArray[index].id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+
   const response = await fetch(`${apiEndPoint}/messages`, {
     method: 'POST',
     headers: {
@@ -30,6 +35,7 @@ async function resentMessage(
 
   if (messageBody.error) {
     alert('Resent was unsuccessful');
+    console.log(messageBody);
     return;
   }
   messageBody.createDate = new Date(messageBody.createDate);
@@ -38,10 +44,10 @@ async function resentMessage(
   const idToDelete = newArray.splice(index, 1)[0];
   newArray.push(messageBody);
   setQueueArray(newArray);
-  await fetch(`${apiEndPoint}/messages/${idToDelete.id}`, {
+  /* await fetch(`${apiEndPoint}/messages/${idToDelete.id}`, {
     method: 'DELETE',
     credentials: 'include'
-  });
+  }); */
 }
 
 function makeItems(
