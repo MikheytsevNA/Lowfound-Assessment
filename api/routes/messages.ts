@@ -123,7 +123,9 @@ const messagePlugin: FastifyPluginAsync = async (fastify, options) => {
         question: question,
         id: ''
       };
-    } catch {}
+    } catch (e) {
+      console.log(e);
+    }
     const response = await fastify.db.collection(`/users/${user.id}/messages`).add(responseMessage);
     responseMessage.id = response.id;
     reply.send(responseMessage);
